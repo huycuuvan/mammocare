@@ -1,0 +1,204 @@
+# Yii2 Framework
+/vendor/
+/node_modules/
+/bower_components/
+
+# Runtime directories
+/runtime/
+/backend/runtime/
+/frontend/runtime/
+/console/runtime/
+/common/runtime/
+
+# Log files
+*.log
+/error_log
+/error.log
+/access.log
+
+# Cache and temporary files
+/cache/
+/tmp/
+/temp/
+*.tmp
+*.temp
+
+# Database
+*.sql
+*.db
+*.sqlite
+*.sqlite3
+
+# Configuration files with sensitive data
+/common/config/main-local.php
+/common/config/params-local.php
+/backend/config/main-local.php
+/backend/config/params-local.php
+/frontend/config/main-local.php
+/frontend/config/params-local.php
+/console/config/main-local.php
+/console/config/params-local.php
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# Upload directories (keep structure but ignore content)
+/upload/*
+!/upload/.gitkeep
+/backend/web/uploads/*
+!/backend/web/uploads/.gitkeep
+/frontend/web/uploads/*
+!/frontend/web/uploads/.gitkeep
+
+# Asset files (generated)
+/web/assets/*
+!/web/assets/.gitkeep
+/backend/web/assets/*
+!/backend/web/assets/.gitkeep
+/frontend/web/assets/*
+!/frontend/web/assets/.gitkeep
+
+# Composer
+composer.phar
+composer.lock
+
+# IDE and Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Archive files
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# PHP specific
+*.php~
+*.php.bak
+*.php.orig
+
+# Test coverage
+/coverage/
+/clover.xml
+/phpunit.xml
+
+# Documentation (if auto-generated)
+/docs/build/
+
+# Local development
+/local/
+/dev/
+/test/
+
+# Security sensitive files
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Build artifacts
+/build/
+/dist/
+
+# Package managers
+package-lock.json
+yarn.lock
+
+# Sass cache
+.sass-cache/
+
+# Less cache
+.less-cache/
+
+# CSS/JS minified files (if auto-generated)
+*.min.css
+*.min.js
+
+# Image optimization cache
+*.webp.cache
+
+# Local configuration overrides
+*-local.php
+*-local.yml
+*-local.yaml
+
+# Debug and profiling
+/debug/
+/profile/
+*.prof
+
+# Session files
+/sessions/
+*.sess
+
+# Temporary uploads
+/tmp_uploads/
+
+# Custom additions for this project
+/error_log
+/downvideo.php
+/robots.txt
+/sitemap.xml
+
+# Project specific directories to ignore
+/admin/
+/asset-builder/
+/assets/
+/bundle/
+/cgi-bin/
+/console/
+/upload/
+/vendor/
+
+# Keep structure but ignore content
+/admin/*
+!/admin/.gitkeep
+/asset-builder/*
+!/asset-builder/.gitkeep
+/assets/*
+!/assets/.gitkeep
+/bundle/*
+!/bundle/.gitkeep
+/upload/*
+!/upload/.gitkeep
+
+# Documentation files
+*.md
+!README.md
+
+# Well-known directory (security)
+/.well-known/
+
+# Apache/Nginx config
+.htaccess
+.htpasswd
+
+# Keep important directories but ignore content
+!/vendor/.gitkeep
+!/runtime/.gitkeep
+!/web/assets/.gitkeep
+!/upload/.gitkeep
