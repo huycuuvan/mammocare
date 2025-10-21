@@ -1576,4 +1576,50 @@ class SiteController extends Controller
         $this->setBigTitle('Tài liệu Tải về', true);
         return $this->render('knowledge-downloads');
     }
+
+    /**
+     * Branches main page
+     */
+    public function actionBranches()
+    {
+        $this->setBigTitle('Chi nhánh', true);
+        return $this->render('branches');
+    }
+
+    /**
+     * Branch detail page
+     */
+    public function actionBranchDetail($city = 'ha-noi')
+    {
+        $this->setBigTitle('Chi nhánh ' . ucfirst(str_replace('-', ' ', $city)), true);
+        return $this->render('branch-detail', ['city' => $city]);
+    }
+
+
+    /**
+     * Contact info page
+     */
+    public function actionContactInfo()
+    {
+        $this->setBigTitle('Thông tin liên hệ', true);
+        return $this->render('contact-info');
+    }
+
+    /**
+     * Contact question page
+     */
+    public function actionContactQuestion()
+    {
+        $this->setBigTitle('Gửi câu hỏi', true);
+        return $this->render('contact-question');
+    }
+
+    /**
+     * Contact recruitment page
+     */
+    public function actionContactRecruitment()
+    {
+        $this->setBigTitle('Tuyển dụng', true);
+        return $this->render('contact-recruitment');
+    }
 }
