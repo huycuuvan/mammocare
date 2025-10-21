@@ -1239,6 +1239,42 @@ class SiteController extends Controller
             'pagination' => $pagination,
         ]);
     }
+
+    public function actionDoctors()
+    {
+        $this->setBigTitle('Đội ngũ bác sĩ', true);
+        return $this->render('doctors');
+    }
+
+    public function actionTestDoctors()
+    {
+        return $this->render('doctors');
+    }
+
+    public function actionBooking()
+    {
+        $this->setBigTitle('Đặt lịch khám', true);
+        return $this->render('booking');
+    }
+
+    public function actionBookingOnline()
+    {
+        $this->setBigTitle('Đặt lịch Online', true);
+        return $this->render('booking-online');
+    }
+
+    public function actionBookingPrepare()
+    {
+        $this->setBigTitle('Chuẩn bị khám', true);
+        return $this->render('booking-prepare');
+    }
+
+    public function actionBookingProcess()
+    {
+        $this->setBigTitle('Quy trình khám', true);
+        return $this->render('booking-process');
+    }
+
     public function actionListDoctor($id,$name)
     {
         $model = CatDoctor::findOne($id);
@@ -1494,5 +1530,50 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
+    }
+
+    /**
+     * Knowledge main page
+     */
+    public function actionKnowledge()
+    {
+        $this->setBigTitle('Kiến thức Y khoa', true);
+        return $this->render('knowledge');
+    }
+
+    /**
+     * Knowledge news page
+     */
+    public function actionKnowledgeNews()
+    {
+        $this->setBigTitle('Tin tức Y khoa', true);
+        return $this->render('knowledge-news');
+    }
+
+    /**
+     * Knowledge Q&A page
+     */
+    public function actionKnowledgeQa()
+    {
+        $this->setBigTitle('Hỏi đáp', true);
+        return $this->render('knowledge-qa');
+    }
+
+    /**
+     * Knowledge self-check page
+     */
+    public function actionKnowledgeSelfCheck()
+    {
+        $this->setBigTitle('Hướng dẫn Tự khám', true);
+        return $this->render('knowledge-self-check');
+    }
+
+    /**
+     * Knowledge downloads page
+     */
+    public function actionKnowledgeDownloads()
+    {
+        $this->setBigTitle('Tài liệu Tải về', true);
+        return $this->render('knowledge-downloads');
     }
 }

@@ -3,6 +3,17 @@
 //Rules for frontend URL
 $rules = [
     ['pattern' => '', 'route' => 'site/index'],
+    ['pattern' => 'bac-si', 'route' => 'site/doctors'],
+    ['pattern' => 'test-doctors', 'route' => 'site/test-doctors'],
+    ['pattern' => 'dat-lich-kham', 'route' => 'site/booking'],
+    ['pattern' => 'dat-lich-kham/online', 'route' => 'site/booking-online'],
+    ['pattern' => 'dat-lich-kham/chuan-bi', 'route' => 'site/booking-prepare'],
+    ['pattern' => 'dat-lich-kham/quy-trinh', 'route' => 'site/booking-process'],
+    ['pattern' => 'kien-thuc', 'route' => 'site/knowledge'],
+    ['pattern' => 'kien-thuc/tin-tuc', 'route' => 'site/knowledge-news'],
+    ['pattern' => 'kien-thuc/hoi-dap', 'route' => 'site/knowledge-qa'],
+    ['pattern' => 'kien-thuc/tu-kham', 'route' => 'site/knowledge-self-check'],
+    ['pattern' => 'kien-thuc/tai-lieu', 'route' => 'site/knowledge-downloads'],
     ['pattern' => 'lien-he', 'route' => 'site/contact', 'suffix' => '.html'],
     ['pattern' => 'gallery/<page:\d+>', 'route' => 'site/gallery','defaults' => ['page' => 1]],
     ['pattern' => '<name>-album<id:\d+>', 'route' => 'site/album',  'suffix' => '.html'],
@@ -22,7 +33,6 @@ $rules = [
     ['pattern' => 'search', 'route' => 'site/search-news', 'suffix' => '.html'],
     ['pattern' => 'search', 'route' => 'site/search', 'suffix' => '.html'],
     ['pattern' => 'agency', 'route' => 'site/list-agency', 'defaults' => ['page' => 1]],
-    ['pattern' => 'bac-si', 'route' => 'site/team', 'defaults' => ['page' => 1]],
     ['pattern' => '<name>-bs<id:\d+>', 'route' => 'site/detail', 'suffix' => '.html'],
     ['pattern' => '<name>-d<id:\d+>/<page:\d+>', 'route' => 'site/list-doctor', 'defaults' => ['page' => 1]],
 

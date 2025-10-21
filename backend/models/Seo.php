@@ -37,6 +37,7 @@ class Seo extends \yii\db\ActiveRecord
     const TEMPLATE_PAGE = 14;
     const APP_PAGE = 15;
     const THANK_PAGE = 16;
+    const DOCTOR_PAGE = 17;
 
     /**
      * {@inheritdoc}
