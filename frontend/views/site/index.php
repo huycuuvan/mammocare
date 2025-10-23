@@ -149,28 +149,52 @@ else :
 endif;
 ?>
 
-<!-- 2. GIỚI THIỆU NGẮN VỀ MAMMOCARE -->
+<!-- 2. TIN TỨC NỔI BẬT (thay cho Giới thiệu) -->
 <?php
-$aboutList = Partner::getPartner(Partner::ABOUTUS,1);
-$aboutSign = Partner::getPartner(Partner::ABOUTLINK,1);
-if(!empty($aboutList)){
-    $ab=$aboutList[0];
+$news = News::getHomeNews();
+if (!empty($news)) {
+    $highlightNews = array_slice($news, 0, 3);
     ?>
-    <section class="about-home-short py-4 py-lg-5">
+    <section class="latest-news py-4 py-lg-5 news">
         <div class="container">
-            <div class="row align-items-center">
-                <div class="col-12 col-md-6" data-aos="fade-right" data-aos-delay="100">
-                    <div class="about-content">
-                        <h2 class="mb-3"><?= $ab->name; ?></h2>
-                        <div class="brief mb-4"><?= strip_tags(substr($ab->content, 0, 300)) ?>...</div>
-                         <a href="/mammocare-a1.html" class="btn btn-outline-primary">Tìm hiểu thêm</a>
+            <div class="header-box mb-4 mb-lg-5 text-center" data-aos="fade-up" data-aos-delay="100">
+                <h2 class="mb-2">Tin tức nổi bật</h2>
+                <p class="mb-0">Cập nhật hoạt động và sự kiện mới nhất của Mammocare</p>
+            </div>
+            <div class="row">
+                <?php $i = 1; foreach ($highlightNews as $row): 
+                    $url = $row->getUrl();
+                    $cat_home = CatNews::findOne($row->cat_id);
+                    $urlCat = $cat_home ? $cat_home->getUrl() : '#';
+                ?>
+                    <div class="col-12 col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="<?= $i * 100 ?>">
+                        <div class="item h-100">
+                            <div class="img-box mb-0">
+                                <div class="image_inner d-flex">
+                                    <a href="<?= $url ?>">
+                                        <img class="img-cover" src="<?= $row->path ?>" alt="<?= $row->title ?>">
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="item-body p-3">
+                                <div class="d-flex cat-date mb-3 pb-3 border-bottom">
+                                    <span class="date mb-0 mr-4"><i class="far fa-calendar-alt"></i> <?= date('d/m/Y', strtotime($row->created_at)) ?></span>
+                                    <?php if ($cat_home): ?>
+                                        <a href="<?= $urlCat ?>" class=""><i class="fas fa-bars"></i> <?= $cat_home->name ?></a>
+                                    <?php endif; ?>
+                                </div>
+                                <h5 class="item-title mb-3">
+                                    <a href="<?= $url ?>"><?= $row->title ?></a>
+                                </h5>
+                                <p class="content mb-2 d-none"><?= strip_tags(substr($row->brief, 0, 160)) ?>...</p>
+                                <a class="more d-inline-block px-3" href="<?= $url ?>"><?= Yii::t('app','more1') ?> <i class="fas fa-arrow-right"></i></a>
+                            </div>
+                        </div>
                     </div>
-                </div>
-                <div class="col-12 col-md-6" data-aos="fade-left" data-aos-delay="100">
-                    <div class="about-image">
-                        <img class="img-fluid" src="<?= $ab->path; ?>" alt="<?= $ab->name; ?>">
-                    </div>
-                </div>
+                <?php $i++; endforeach; ?>
+            </div>
+            <div class="text-center mt-2 mt-lg-3">
+                <a href="/tin-tuc-l3" class="btn btn-primary">Xem tất cả tin tức</a>
             </div>
         </div>
     </section>
@@ -189,6 +213,19 @@ foreach($serviceList as $menu) {
 }
 if(!empty($serviceItems)){
     $featuredServices = array_slice($serviceItems, 0, 3); // Lấy 3 dịch vụ đầu tiên
+    
+    // Log data của featuredServices
+    error_log("=== FEATURED SERVICES DATA ===");
+    error_log("Number of featured services: " . count($featuredServices));
+    foreach($featuredServices as $index => $service) {
+        error_log("Service " . ($index + 1) . ":");
+        error_log("  - ID: " . (isset($service->id) ? $service->id : 'N/A'));
+        error_log("  - Name: " . (isset($service->name) ? $service->name : 'N/A'));
+        error_log("  - Description: " . (isset($service->description) ? $service->description : 'N/A'));
+        error_log("  - Link: " . (isset($service->link) ? $service->link : 'N/A'));
+        error_log("  - Full object: " . print_r($service, true));
+    }
+    error_log("=== END FEATURED SERVICES DATA ===");
     ?>
      <section class="featured-services py-4 py-lg-5 bg-light">
          <div class="container">
@@ -295,33 +332,101 @@ if(!empty($serviceItems)){
     
     <!-- CSS cho các phần đã sửa -->
     <style>
-    /* CSS cho News Cards */
-    .news-card {
-        background: white;
-        border-radius: 10px;
-        padding: 20px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    .news-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    }
-    .news-image {
-        border-radius: 8px;
+    /* CSS cho News Cards - đồng bộ hoàn toàn với trang danh sách tin */
+    .latest-news .item {
+        height: 100%;
+        background: #fff;
+        box-shadow: 0px 10px 30px 0px rgba(50, 50, 50, 0.16);
+        border-radius: 0;
         overflow: hidden;
+        position: relative;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
     }
-    .news-title a {
-        color: #333;
+    .latest-news .item:hover {
+        box-shadow: 0px 10px 30px 0px rgb(126, 126, 126);
+        margin-top: -8px;
+    }
+    .latest-news .item-body {
+        position: relative;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .latest-news .item-title {
+        font-size: 18px;
+        line-height: 28px;
         font-weight: 600;
+        margin-bottom: 15px;
+    }
+    .latest-news .item-title a {
+        color: #333;
         text-decoration: none;
     }
-    .news-title a:hover {
+    .latest-news .item-title a:hover {
         color: #007bff;
     }
-    .news-brief {
-        color: #666;
-        line-height: 1.6;
+    .latest-news .cat-date {
+        font-size: 13px;
+        color: #504f4f;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    .latest-news .cat-date a {
+        color: #504f4f;
+        text-decoration: none;
+    }
+    .latest-news .cat-date i {
+        color: #ff6b9d;
+        margin-right: 5px;
+    }
+    .latest-news .date {
+        font-size: 13px;
+        color: #504f4f;
+    }
+    .latest-news .date i {
+        color: #a6a6a6;
+        margin-right: 5px;
+    }
+    .latest-news .more {
+        background: #ff6b9d;
+        color: #fff;
+        border-radius: 5px;
+        line-height: 35px;
+        border: 2px solid #ff6b9d;
+        text-decoration: none;
+        display: inline-block;
+        padding: 0 15px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        margin-top: auto; /* Đẩy button xuống dưới cùng */
+        align-self: flex-start; /* Căn trái button */
+    }
+    .latest-news .more:hover {
+        background: #fff;
+        color: #ff6b9d;
+    }
+    .latest-news .more i {
+        margin-left: 5px;
+    }
+    /* Button "Xem tất cả tin tức" - đồng bộ với style chung */
+    .latest-news .btn-primary {
+        background: #ff6b9d;
+        border-color: #ff6b9d;
+        color: #fff;
+        padding: 12px 30px;
+        border-radius: 5px;
+        font-weight: 600;
+        text-transform: uppercase;
+        transition: all 0.3s ease;
+    }
+    .latest-news .btn-primary:hover {
+        background: #e55a8a;
+        border-color: #e55a8a;
+        color: #fff;
     }
     
     /* CSS cho Doctor Section - Tăng chiều rộng */
@@ -400,30 +505,363 @@ if(!empty($serviceItems)){
         color: #0056b3;
     }
     
-    /* CSS cho Testimonials - Giống thiết kế cũ */
-    .testimonials .item {
+    /* CSS cho Customer Reviews - Layout 2 cột */
+    .customer-reviews {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    
+    /* Video Container */
+    .video-container {
+        position: relative;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        background: white;
+    }
+    
+    .video-wrapper {
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    }
+    
+    .youtube-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        border-radius: 20px;
+    }
+    
+    .video-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.4) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1.5rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    
+    .video-container:hover .video-overlay {
+        opacity: 1;
+    }
+    
+    .video-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+    
+    .hospital-logo {
+        display: flex;
+        align-items: center;
+        color: white;
+    }
+    
+    .logo-icon {
+        width: 40px;
+        height: 40px;
+        background: #289cd7;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+    }
+    
+    .logo-text strong {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.2rem;
+    }
+    
+    .logo-text span {
+        font-size: 0.9rem;
+        opacity: 0.9;
+    }
+    
+    .video-actions {
+        display: flex;
+        gap: 0.5rem;
+    }
+    
+    .action-btn {
+        background: rgba(255,255,255,0.2);
+        border: none;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 25px;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .action-btn:hover {
+        background: rgba(255,255,255,0.3);
+    }
+    
+    .video-footer {
+        display: flex;
+        justify-content: flex-start;
+    }
+    
+    .watch-on-btn {
+        background: #ff0000;
+        color: white;
+        border: none;
+        padding: 0.8rem 1.5rem;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .watch-on-btn:hover {
+        background: #cc0000;
+    }
+    
+    /* Reviews Container */
+    .reviews-container {
+        padding: 2rem;
+    }
+    
+    .reviews-header h3 {
+        color: #289cd7;
+        font-weight: 700;
+        font-size: 1.8rem;
+    }
+    
+    .review-card {
         background: white;
         border-radius: 15px;
-        padding: 25px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        margin: 0 10px;
-        max-width: 350px;
+        padding: 1.5rem;
+        box-shadow: none;
+        margin: 0 0.5rem;
+        transition: transform 0.3s ease;
+        border: 1px solid #e9ecef;
     }
-    .testimonials .feed_title {
-        color: #333;
+    
+    .review-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .review-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .customer-avatar {
+        margin-right: 1rem;
+    }
+    
+    .avatar-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #289cd7;
+    }
+    
+    .customer-info {
+        flex: 1;
+    }
+    
+    .customer-name {
+        font-size: 1.1rem;
         font-weight: 700;
-        font-size: 16px;
+        color: #2c3e50;
+        margin-bottom: 0.2rem;
     }
-    .testimonials .feed_job {
-        font-size: 14px;
-        font-weight: 500;
+    
+    .customer-job {
+        font-size: 0.9rem;
+        color: #6c757d;
+        margin-bottom: 0;
     }
-    .testimonials .content {
-        font-size: 14px;
-        text-align: left;
+    
+    .rating {
+        color: #ffc107;
+        font-size: 1rem;
     }
-    .testimonials .img-box img {
-        border: 2px dotted #ff6b9d !important;
+    
+    .review-content p {
+        color: #495057;
+        line-height: 1.6;
+        margin-bottom: 0;
+        font-style: italic;
+    }
+    
+    .reviews-actions .btn {
+        background: linear-gradient(135deg, #289cd7 0%, #1e7bb8 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .reviews-actions .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(40,156,215,0.3);
+    }
+    
+    /* Responsive Design cho Customer Reviews */
+    @media (max-width: 992px) {
+        .customer-reviews .row {
+            flex-direction: column;
+        }
+        
+        .video-container {
+            margin-bottom: 2rem;
+        }
+        
+        .reviews-container {
+            padding: 1.5rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .customer-reviews {
+            padding: 2rem 0;
+        }
+        
+        .video-container {
+            border-radius: 15px;
+        }
+        
+        .video-overlay {
+            padding: 1rem;
+        }
+        
+        .hospital-logo {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        
+        .logo-icon {
+            margin-right: 0;
+            margin-bottom: 0.5rem;
+        }
+        
+        .video-actions {
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+        
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+        
+        .watch-on-btn {
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+        }
+        
+        .reviews-container {
+            padding: 1rem;
+        }
+        
+        .reviews-header h3 {
+            font-size: 1.5rem;
+        }
+        
+        .review-card {
+            padding: 1.2rem;
+            margin: 0 0.3rem;
+            box-shadow: none;
+        }
+        
+        .customer-name {
+            font-size: 1rem;
+        }
+        
+        .customer-job {
+            font-size: 0.85rem;
+        }
+        
+        .avatar-img {
+            width: 45px;
+            height: 45px;
+        }
+    }
+    
+    @media (max-width: 576px) {
+        .video-overlay {
+            padding: 0.8rem;
+        }
+        
+        .logo-text strong {
+            font-size: 1rem;
+        }
+        
+        .logo-text span {
+            font-size: 0.8rem;
+        }
+        
+        .action-btn {
+            padding: 0.3rem 0.6rem;
+            font-size: 0.75rem;
+        }
+        
+        .watch-on-btn {
+            padding: 0.5rem 1rem;
+            font-size: 0.8rem;
+        }
+        
+        .reviews-header h3 {
+            font-size: 1.3rem;
+        }
+        
+        .review-card {
+            padding: 1rem;
+            box-shadow: none;
+        }
+        
+        .review-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+        }
+        
+        .customer-avatar {
+            margin-right: 0;
+        }
+        
+        .avatar-img {
+            width: 40px;
+            height: 40px;
+        }
+        
+        .customer-name {
+            font-size: 0.95rem;
+        }
+        
+        .customer-job {
+            font-size: 0.8rem;
+        }
+        
+        .rating {
+            font-size: 0.9rem;
+        }
     }
     
     /* CSS cho tiêu đề chính - Giống thiết kế ảnh */
@@ -551,134 +989,205 @@ if(!empty($doctorList)){
                      <a href="/bac-si" class="btn btn-outline-primary">Xem tất cả bác sĩ</a>
                  </div>
              </div>
-            <div class="wrap pb-5"  data-aos="fade-up" data-aos-delay="200">
-                <div class="owl-carousel owl-theme owl-doctor-style ">
-                    <?php
-                    $i=1;
-                    foreach($doctorList as $row):
-                        $open_div='';
-                        if(($i==1 || MyExt::chuoisocong($i,1,5) == 1 ) ) $open_div='<div class="wrap-box d-md-flex '.$i.'">';
-                        echo $open_div;
-                        ?>
-                        <div class="item-wrap <?php if(($i==1 || MyExt::chuoisocong($i,1,5) == 1 ) ) echo 'full-width'?>">
-                            <div class="item text-center">
-                                <div class="img-box d-flex"  onclick="location.href='<?=$row->getUrl()?>';">
-                                    <img class="lazyload img-cover" data-src="<?= $row->path?$row->path:'upload/no-image.jpg'?>" alt="<?= $row->name ?>" title="<?= $row->name ?>" />
-                                </div>
-                                <div class="info-box mt-3 mb-2">
-                                    <p class="specialist mb-1"><?= $row->father?$row->father->name:''?></p>
-                                    <a class="name text-gradient mb-1 text-uppercase" href="<?=$row->getUrl()?>"><?=$row->name?></a>
-                                    <p class="brief text-gradient mb-2"><?=$row->brief?></p>
-                                    <p class="info mb-2 "><?=$row->content?></p>
-                                    <a class="email pt-1 border-top" href="mailto:<?=$row->email?>"><i class="far fa-envelope"></i> <?=$row->email?></a>
-                                    <a class="phone" href="tel:<?=$row->mobile?>"><i class="fas fa-phone-alt"></i> <?=$row->mobile?></a>
-                                </div>
-                            </div>
-                        </div>
-                        <?php
-                        $close_div='';
-                        if($i==5 || MyExt::chuoisocong($i,5,5) == 1) $close_div='</div>';
-                        echo $close_div;
-                        $i++;
-                    endforeach;
-                    if(count($doctorList)%5!=0) echo '</div>';
-                    ?>
-                </div>
-            </div>
-            </div>
-        </div>
-    </section>
-<?php } ?>
-
-<!-- 6. TESTIMONIALS -->
-<?php
-$commentList = Comment::getComment();
-if (!empty($commentList)) {
-?>
-    <section class="testimonials py-4 py-lg-5">
-        <div class="container">
-            <div class="header-box mb-4 mb-lg-5 text-center" data-aos="fade-up" data-aos-delay="100">
-                <h2 class="mb-2">Khách hàng đánh giá về MammoCare</h2>
-                <p class="mb-0">Hơn 5000+ khách hàng đang sử dụng dịch vụ của chúng tôi</p>
-            </div>
-            <div class="owl-carousel owl-theme owl-customer">
+            <div class="row g-4" data-aos="fade-up" data-aos-delay="200">
                 <?php
-                $i = 0;
-                foreach ($commentList as $row) { ?>
-                    <div class="item-wrap">
-                        <div class="item mx-auto px-3 py-4">
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="img-box-wrap mr-3">
-                                    <div class="img-box d-flex">
-                                        <img width="40" height="40" class="img img-cover rounded-circle" src="<?= $row->path; ?>" alt="<?= $row->name; ?>" style="border: 2px dotted #ff6b9d;" />
-                                    </div>
-                                </div>
-                                <div class="info">
-                                    <div class="feed_title mb-1">
-                                        <strong style="color: #000;"><?= strip_tags($row->name); ?></strong>
-                                    </div>
-                                    <div class="feed_job mb-0" style="color: #ff6b9d;"><?= strip_tags($row->job); ?></div>
-                                </div>
-                            </div>
-                            <div class="feed_content">
-                                <div class="content" style="color: #4a90e2; line-height: 1.6;"><?= strip_tags($row->content); ?></div>
+                foreach($doctorList as $row):
+                ?>
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <div class="doctor-card h-100 text-center">
+                        <div class="doctor-image mb-3">
+                            <img class="img-fluid rounded-circle" 
+                                 src="<?= $row->path ? $row->path : 'upload/no-image.jpg' ?>" 
+                                 alt="<?= $row->name ?>" 
+                                 title="<?= $row->name ?>"
+                                 style="width: 120px; height: 120px; object-fit: cover; cursor: pointer;"
+                                 onclick="location.href='<?=$row->getUrl()?>';" />
+                        </div>
+                        <div class="doctor-info">
+                            <p class="specialist mb-1 text-muted small"><?= $row->father ? $row->father->name : '' ?></p>
+                            <h5 class="doctor-name mb-2">
+                                <a href="<?=$row->getUrl()?>" class="text-decoration-none text-dark"><?=$row->name?></a>
+                            </h5>
+                            <p class="doctor-brief mb-2 text-primary small"><?=$row->brief?></p>
+                            <p class="doctor-content mb-3 small text-muted"><?=$row->content?></p>
+                            <div class="doctor-contact">
+                                <a class="d-block mb-1 text-decoration-none small" href="mailto:<?=$row->email?>">
+                                    <i class="far fa-envelope me-1"></i> <?=$row->email?>
+                                </a>
+                                <a class="d-block text-decoration-none small" href="tel:<?=$row->mobile?>">
+                                    <i class="fas fa-phone-alt me-1"></i> <?=$row->mobile?>
+                                </a>
                             </div>
                         </div>
                     </div>
-                <?php $i++; } ?>
+                </div>
+                <?php endforeach; ?>
+            </div>
             </div>
         </div>
     </section>
 <?php } ?>
 
-<!-- 7. TIN TỨC MỚI NHẤT -->
+<!-- 6. CUSTOMER REVIEWS - 2 COLUMN LAYOUT -->
 <?php
-$news = News::getHomeNews();
-if (!empty($news)) {
-    ?>
-    <section class="latest-news py-4 py-lg-5 bg-light">
+$commentList = Comment::getComment();
+
+// Nếu không có data từ database, tạo data mẫu
+if (empty($commentList)) {
+    $commentList = [];
+    
+    // Tạo data mẫu cho reviews
+    $sampleComments = [
+        [
+            'id' => 1,
+            'name' => 'Nguyễn Thị Lan',
+            'job' => 'Nhân viên văn phòng',
+            'content' => 'Dịch vụ rất chuyên nghiệp, bác sĩ tận tình. Kết quả chính xác và nhanh chóng. Tôi rất hài lòng với chất lượng dịch vụ tại MammoCare.',
+            'path' => 'bundle/images/avatar1.jpg'
+        ],
+        [
+            'id' => 2,
+            'name' => 'Trần Văn Minh',
+            'job' => 'Kinh doanh',
+            'content' => 'Thiết bị hiện đại, đội ngũ bác sĩ giàu kinh nghiệm. Quy trình khám bệnh rất thuận tiện và nhanh gọn. Cảm ơn MammoCare!',
+            'path' => 'bundle/images/avatar2.jpg'
+        ],
+        [
+            'id' => 3,
+            'name' => 'Lê Thị Hoa',
+            'job' => 'Giáo viên',
+            'content' => 'Lần đầu khám tại đây, tôi rất lo lắng. Nhưng bác sĩ và nhân viên đã tư vấn rất tận tình, giúp tôi yên tâm. Kết quả rất chính xác.',
+            'path' => 'bundle/images/avatar3.jpg'
+        ],
+        [
+            'id' => 4,
+            'name' => 'Phạm Văn Đức',
+            'job' => 'Kỹ sư',
+            'content' => 'Cơ sở vật chất hiện đại, bác sĩ chuyên môn cao. Quy trình khám bệnh được tối ưu hóa, tiết kiệm thời gian. Rất hài lòng!',
+            'path' => 'bundle/images/avatar4.jpg'
+        ]
+    ];
+    
+    foreach($sampleComments as $data) {
+        $comment = new \stdClass();
+        $comment->id = $data['id'];
+        $comment->name = $data['name'];
+        $comment->job = $data['job'];
+        $comment->content = $data['content'];
+        $comment->path = $data['path'];
+        $commentList[] = $comment;
+    }
+}
+
+if (!empty($commentList)) {
+?>
+    <section class="customer-reviews py-4 py-lg-5 bg-light">
         <div class="container">
             <div class="header-box mb-4 mb-lg-5 text-center" data-aos="fade-up" data-aos-delay="100">
-                <h2 class="mb-2">Tin tức sự kiện mới nhất</h2>
-                <p class="mb-0">của trung tâm chẩn đoán hình ảnh vú Mammocare</p>
+                <h2 class="mb-2">Phòng Khám & Trang Thiết Bị Hàng Đầu Việt Nam</h2>
+                <p class="mb-0">Với sứ mệnh "Chữa bệnh – cứu người", MammoCare trong suốt 10 năm qua đã dốc sức, tận tâm vì sức khỏe cộng đồng</p>
             </div>
-             <div class="row">
-                 <?php
-                 $i=1;
-                 foreach ($news as $row){
-                     $cat_home=CatNews::findOne($row->cat_id);
-                     $url = $row->getUrl();
-                     ?>
-                     <div class="col-12 col-md-6 col-lg-4 mb-4" data-aos="fade-up" data-aos-delay="<?= $i * 100 ?>">
-                         <div class="news-card h-100">
-                             <div class="news-image mb-3">
-                                 <img class="img-fluid" src="<?= $row->path ?>" alt="<?= $row->title ?>">
-                             </div>
-                             <div class="news-content">
-                                 <h5 class="news-title mb-2">
-                                     <a href="<?= $url ?>"><?= $row->title ?></a>
-                                 </h5>
-                                 <p class="news-brief mb-3"><?=strip_tags(substr($row->brief, 0, 100))?>...</p>
-                                 <div class="d-flex justify-content-between align-items-center">
-                                     <a class="btn btn-outline-primary btn-sm" href="<?= $url ?>">Đọc thêm</a>
-                                     <span class="news-date text-muted"><?=date('d/m/Y',strtotime($row->created_at))?></span>
-                                 </div>
-                             </div>
-                         </div>
-                     </div>
-                     <?php
-                     $i++;
-                 }
-                 ?>
-             </div>
-            <div class="text-center mt-4">
-                <a href="/tin-tuc-l3" class="btn btn-primary">Xem tất cả tin tức</a>
+            
+            <div class="row align-items-center">
+                <!-- Cột trái: Video YouTube -->
+                <div class="col-12 col-lg-6 mb-4 mb-lg-0" data-aos="fade-right" data-aos-delay="200">
+                    <div class="video-container">
+                        <div class="video-wrapper">
+                            <iframe 
+                                src="https://www.youtube.com/embed/bz7eihJoJlI?start=11&autoplay=0&rel=0&modestbranding=1" 
+                                title="Khám với chuyên gia - Tận tâm nh..."
+                                frameborder="0" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen
+                                class="youtube-video">
+                            </iframe>
+                        </div>
+                        <div class="video-overlay">
+                            <div class="video-info">
+                                <div class="hospital-logo">
+                                    <div class="logo-icon">
+                                        <i class="fas fa-hospital"></i>
+                                    </div>
+                                    <div class="logo-text">
+                                        <strong>MammoCare</strong>
+                                        <span>Trung tâm chẩn đoán hình ảnh vú</span>
+                                    </div>
+                                </div>
+                                <div class="video-actions">
+                                    <button class="action-btn" title="Xem sau">
+                                        <i class="far fa-clock"></i>
+                                        <span>Xem sau</span>
+                                    </button>
+                                    <button class="action-btn" title="Chia sẻ">
+                                        <i class="fas fa-share"></i>
+                                        <span>Chia sẻ</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="video-footer">
+                                <button class="watch-on-btn">
+                                    <i class="fab fa-youtube"></i>
+                                    <span>Xem trên</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Cột phải: Đánh giá khách hàng -->
+                <div class="col-12 col-lg-6" data-aos="fade-left" data-aos-delay="300">
+                    <div class="reviews-container">
+                        <div class="reviews-header mb-4">
+                            <h3 class="mb-3">Khách hàng đánh giá</h3>
+                            <p class="text-muted mb-0">Hơn 5000+ khách hàng đang sử dụng dịch vụ của chúng tôi</p>
+                        </div>
+                        
+                        <div class="reviews-carousel">
+                            <div class="owl-carousel owl-theme owl-customer-reviews">
+                                <?php
+                                $i = 0;
+                                foreach ($commentList as $row) { ?>
+                                    <div class="review-item">
+                                        <div class="review-card">
+                                            <div class="review-header">
+                                                <div class="customer-avatar">
+                                                    <img src="<?= $row->path; ?>" alt="<?= $row->name; ?>" class="avatar-img">
+                                                </div>
+                                                <div class="customer-info">
+                                                    <h5 class="customer-name"><?= strip_tags($row->name); ?></h5>
+                                                    <p class="customer-job"><?= strip_tags($row->job); ?></p>
+                                                </div>
+                                                <div class="rating">
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                    <i class="fas fa-star"></i>
+                                                </div>
+                                            </div>
+                                            <div class="review-content">
+                                                <p><?= strip_tags($row->content); ?></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php $i++; } ?>
+                            </div>
+                        </div>
+                        
+                        <div class="reviews-actions mt-4">
+                            <button class="btn btn-primary">
+                                <i class="fas fa-arrow-right me-2"></i>
+                                Tìm Hiểu Thêm
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    <?php
-}
-?>
+<?php } ?>
+
+<?php // Tin tức dưới footer đã được bỏ theo yêu cầu ?>
 
 <!-- 8. CTA CUỐI TRANG -->
 <section class="end-cta py-4 py-lg-5 bg-primary text-white">
@@ -695,3 +1204,44 @@ if (!empty($news)) {
         </div>
     </div>
 </section>
+
+<script>
+// Đợi jQuery và Owl Carousel load xong
+function initCustomerReviews() {
+    if (typeof $ !== 'undefined' && typeof $.fn.owlCarousel !== 'undefined') {
+        // Khởi tạo Owl Carousel cho Customer Reviews
+        if ($('.owl-customer-reviews').length) {
+            $('.owl-customer-reviews').owlCarousel({
+                loop: true,
+                margin: 20,
+                nav: false,
+                dots: true,
+                autoplay: true,
+                autoplayTimeout: 5000,
+                autoplayHoverPause: true,
+                responsive: {
+                    0: {
+                        items: 1
+                    },
+                    768: {
+                        items: 1
+                    },
+                    992: {
+                        items: 1
+                    }
+                }
+            });
+        }
+    } else {
+        // Nếu jQuery chưa load, thử lại sau 100ms
+        setTimeout(initCustomerReviews, 100);
+    }
+}
+
+// Chạy khi DOM ready
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCustomerReviews);
+} else {
+    initCustomerReviews();
+}
+</script>

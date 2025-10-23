@@ -1260,7 +1260,21 @@ class SiteController extends Controller
     public function actionBookingOnline()
     {
         $this->setBigTitle('Đặt lịch Online', true);
-        return $this->render('booking-online');
+        
+        $model = new \frontend\models\BookingForm();
+        
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->sendBookingEmail()) {
+                Yii::$app->session->setFlash('success', 'Đặt lịch thành công! Chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất.');
+                return $this->redirect(['site/booking-online']);
+            } else {
+                Yii::$app->session->setFlash('error', 'Có lỗi xảy ra khi đặt lịch. Vui lòng thử lại sau.');
+            }
+        }
+        
+        return $this->render('booking-online', [
+            'model' => $model
+        ]);
     }
 
     public function actionBookingPrepare()

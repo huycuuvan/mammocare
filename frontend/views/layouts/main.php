@@ -44,7 +44,7 @@ $info = $this->params['info'];
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1">
     <?php $this->registerCsrfMetaTags() ?>
     <title><?= Html::encode($this->title) ?></title>
-    <base href="<?=Url::base(true) ?>/" target="_self" />
+    <!-- <base href="<?=Url::base(true) ?>/" target="_self" /> -->
     <?php
     $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => $conf->favicon]);
     $this->registerLinkTag(['rel' => 'canonical', 'href' => Yii::$app->params['canonical']]);

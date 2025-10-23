@@ -7,16 +7,58 @@ use backend\models\Supporter;
 use backend\models\CatDoctor;
 
 /* @var $this yii\web\View */
+/* @var $model frontend\models\BookingForm */
 
 $this->title = 'Đặt lịch Online - Mammocare';
 Yii::$app->params['og_description'] = 'Đặt lịch khám trực tuyến tại Mammocare - Form đơn giản, nhanh chóng';
 ?>
 
+<!-- Flash Messages -->
+<?php if (Yii::$app->session->hasFlash('success')): ?>
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="fas fa-check-circle me-2"></i>
+        <?= Yii::$app->session->getFlash('success') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="fas fa-exclamation-circle me-2"></i>
+        <?= Yii::$app->session->getFlash('error') ?>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+<?php endif; ?>
+
 <style>
+/* Font và spacing đồng bộ với trang chủ */
 .booking-form {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     min-height: 100vh;
     padding: 2rem 0;
+    font-family: inherit;
+}
+
+/* Icon spacing chuẩn */
+.booking-form i {
+    margin-right: 8px;
+    margin-left: 8px;
+}
+
+.booking-form .me-2 {
+    margin-right: 8px !important;
+}
+
+.booking-form .ms-2 {
+    margin-left: 8px !important;
+}
+
+.booking-form .me-1 {
+    margin-right: 4px !important;
+}
+
+.booking-form .ms-1 {
+    margin-left: 4px !important;
 }
 
 .booking-header {
@@ -30,12 +72,16 @@ Yii::$app->params['og_description'] = 'Đặt lịch khám trực tuyến tại 
     font-weight: 800;
     margin-bottom: 1rem;
     color: #289cd7;
+    font-family: inherit;
+    line-height: 1.2;
 }
 
 .booking-header p {
     font-size: 1.3rem;
     color: #6c757d;
     font-weight: 400;
+    font-family: inherit;
+    line-height: 1.5;
 }
 
 .progress-steps {
@@ -137,6 +183,8 @@ Yii::$app->params['og_description'] = 'Đặt lịch khám trực tuyến tại 
     font-weight: 600;
     font-size: 1.1rem;
     margin-bottom: 0.8rem;
+    font-family: inherit;
+    line-height: 1.4;
 }
 
 .form-select, .form-control {
@@ -313,32 +361,279 @@ Yii::$app->params['og_description'] = 'Đặt lịch khám trực tuyến tại 
     display: block;
 }
 
-@media (max-width: 768px) {
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .booking-form-container {
+        margin: 0 1rem;
+    }
+}
+
+@media (max-width: 992px) {
     .booking-header h1 {
-        font-size: 2.2rem;
+        font-size: 2.4rem;
     }
     
     .booking-header p {
-        font-size: 1.1rem;
+        font-size: 1.2rem;
+    }
+    
+    .progress-steps {
+        padding: 2rem;
+    }
+    
+    .step-number {
+        width: 55px;
+        height: 55px;
+        font-size: 1.3rem;
+    }
+    
+    .card-body {
+        padding: 1.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .booking-form {
+        padding: 1rem 0;
+    }
+    
+    .booking-header h1 {
+        font-size: 2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .booking-header p {
+        font-size: 1rem;
+        margin-bottom: 2rem;
     }
     
     .progress-steps {
         padding: 1.5rem;
+        margin-bottom: 1.5rem;
     }
     
     .step-number {
-        width: 50px;
-        height: 50px;
-        font-size: 1.2rem;
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .step-title {
+        font-size: 0.9rem;
+    }
+    
+    .card-header {
+        padding: 1rem 1.5rem;
+    }
+    
+    .card-header h5 {
+        font-size: 1.1rem;
     }
     
     .card-body {
         padding: 1.5rem;
     }
     
-    .btn-primary, .btn-secondary {
-        padding: 0.8rem 2rem;
+    .form-label {
         font-size: 1rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .form-select, .form-control {
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+    }
+    
+    .branch-selection .form-check {
+        padding: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .branch-selection .form-check-label strong {
+        font-size: 1rem;
+    }
+    
+    .branch-selection .form-check-label small {
+        font-size: 0.85rem;
+    }
+    
+    .time-slot {
+        padding: 1rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .doctor-card {
+        padding: 1.2rem;
+        margin-bottom: 0.8rem;
+    }
+    
+    .doctor-info h5 {
+        font-size: 1.1rem;
+    }
+    
+    .doctor-info p {
+        font-size: 0.9rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 0.8rem 1.5rem;
+        font-size: 0.95rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .d-flex.justify-content-between .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 576px) {
+    .booking-form {
+        padding: 0.5rem 0;
+    }
+    
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .booking-header h1 {
+        font-size: 1.8rem;
+        line-height: 1.3;
+    }
+    
+    .booking-header p {
+        font-size: 0.95rem;
+    }
+    
+    .progress-steps {
+        padding: 1rem;
+        margin-bottom: 1rem;
+    }
+    
+    .step-number {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .step-title {
+        font-size: 0.8rem;
+        line-height: 1.2;
+    }
+    
+    .card-header {
+        padding: 0.8rem 1rem;
+    }
+    
+    .card-header h5 {
+        font-size: 1rem;
+    }
+    
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .form-label {
+        font-size: 0.95rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .form-select, .form-control {
+        padding: 0.7rem 0.8rem;
+        font-size: 0.9rem;
+    }
+    
+    .branch-selection .form-check {
+        padding: 1rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .branch-selection .form-check-label strong {
+        font-size: 0.95rem;
+    }
+    
+    .branch-selection .form-check-label small {
+        font-size: 0.8rem;
+    }
+    
+    .time-slot {
+        padding: 0.8rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .doctor-card {
+        padding: 1rem;
+        margin-bottom: 0.6rem;
+    }
+    
+    .doctor-info h5 {
+        font-size: 1rem;
+    }
+    
+    .doctor-info p {
+        font-size: 0.85rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 0.7rem 1.2rem;
+        font-size: 0.9rem;
+    }
+    
+    .text-end {
+        text-align: center !important;
+    }
+    
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+    
+    .modal-body {
+        padding: 1rem;
+    }
+    
+    .booking-summary .row {
+        margin: 0;
+    }
+    
+    .booking-summary .col-md-6 {
+        padding: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .booking-header h1 {
+        font-size: 1.6rem;
+    }
+    
+    .step-number {
+        width: 35px;
+        height: 35px;
+        font-size: 0.9rem;
+    }
+    
+    .step-title {
+        font-size: 0.75rem;
+    }
+    
+    .card-body {
+        padding: 0.8rem;
+    }
+    
+    .form-select, .form-control {
+        padding: 0.6rem 0.7rem;
+        font-size: 0.85rem;
+    }
+    
+    .btn-primary, .btn-secondary {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
     }
 }
 </style>
@@ -441,30 +736,26 @@ $specialties = CatDoctor::getParent();
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <label class="form-label fw-bold">Dịch vụ khám *</label>
-                                        <select class="form-select" name="service" required>
-                                            <option value="">-- Chọn dịch vụ --</option>
-                                            <?php foreach ($services as $service): ?>
-                                                <option value="<?= $service->id ?>"><?= $service->name ?></option>
-                                            <?php endforeach; ?>
-                                        </select>
+                                        <?= $form->field($model, 'service_id')->dropDownList(
+                                            \yii\helpers\ArrayHelper::map($services, 'id', 'name'),
+                                            ['prompt' => '-- Chọn dịch vụ --', 'class' => 'form-select']
+                                        )->label(false) ?>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <label class="form-label fw-bold">Chi nhánh *</label>
                                         <div class="branch-selection">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="branch" value="hanoi" id="branch-hanoi" required>
-                                                <label class="form-check-label" for="branch-hanoi">
-                                                    <strong>Hà Nội</strong><br>
-                                                    <small class="text-muted">243 Đường Giải Phóng, Phường Phương Mai, Quận Đống Đa</small>
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="branch" value="nghean" id="branch-nghean" required>
-                                                <label class="form-check-label" for="branch-nghean">
-                                                    <strong>Nghệ An</strong><br>
-                                                    <small class="text-muted">Tầng 2, BV Ngoại khoa 115 Nghệ An, số 40 - Đại lộ Xô Viết Nghệ Tĩnh - TP Vinh</small>
-                                                </label>
-                                            </div>
+                                            <?= $form->field($model, 'branch')->radioList([
+                                                'hanoi' => '<strong>Hà Nội</strong><br><small class="text-muted">243 Đường Giải Phóng, Phường Phương Mai, Quận Đống Đa</small>',
+                                                'nghean' => '<strong>Nghệ An</strong><br><small class="text-muted">Tầng 2, BV Ngoại khoa 115 Nghệ An, số 40 - Đại lộ Xô Viết Nghệ Tĩnh - TP Vinh</small>'
+                                            ], [
+                                                'item' => function ($index, $label, $name, $checked, $value) {
+                                                    $id = 'branch-' . $value;
+                                                    return '<div class="form-check">' .
+                                                        Html::radio($name, $checked, ['value' => $value, 'id' => $id, 'class' => 'form-check-input']) .
+                                                        '<label class="form-check-label" for="' . $id . '">' . $label . '</label>' .
+                                                        '</div>';
+                                                }
+                                            ])->label(false) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -487,35 +778,27 @@ $specialties = CatDoctor::getParent();
                                 <div class="row">
                                     <div class="col-md-6 mb-4">
                                         <label class="form-label fw-bold">Ngày khám *</label>
-                                        <input type="date" class="form-control" name="appointment_date" required>
+                                        <?= $form->field($model, 'preferred_date')->input('date', ['class' => 'form-control'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6 mb-4">
                                         <label class="form-label fw-bold">Giờ khám *</label>
                                         <div class="time-slots">
-                                            <div class="time-slot">
-                                                <input type="radio" name="time_slot" value="8:00" id="time-8">
-                                                <label for="time-8">8:00</label>
-                                            </div>
-                                            <div class="time-slot">
-                                                <input type="radio" name="time_slot" value="9:00" id="time-9">
-                                                <label for="time-9">9:00</label>
-                                            </div>
-                                            <div class="time-slot">
-                                                <input type="radio" name="time_slot" value="10:00" id="time-10">
-                                                <label for="time-10">10:00</label>
-                                            </div>
-                                            <div class="time-slot">
-                                                <input type="radio" name="time_slot" value="14:00" id="time-14">
-                                                <label for="time-14">14:00</label>
-                                            </div>
-                                            <div class="time-slot">
-                                                <input type="radio" name="time_slot" value="15:00" id="time-15">
-                                                <label for="time-15">15:00</label>
-                                            </div>
-                                            <div class="time-slot">
-                                                <input type="radio" name="time_slot" value="16:00" id="time-16">
-                                                <label for="time-16">16:00</label>
-                                            </div>
+                                            <?= $form->field($model, 'preferred_time')->radioList([
+                                                '8:00' => '8:00',
+                                                '9:00' => '9:00', 
+                                                '10:00' => '10:00',
+                                                '14:00' => '14:00',
+                                                '15:00' => '15:00',
+                                                '16:00' => '16:00'
+                                            ], [
+                                                'item' => function ($index, $label, $name, $checked, $value) {
+                                                    $id = 'time-' . str_replace(':', '', $value);
+                                                    return '<div class="time-slot">' .
+                                                        Html::radio($name, $checked, ['value' => $value, 'id' => $id]) .
+                                                        '<label for="' . $id . '">' . $label . '</label>' .
+                                                        '</div>';
+                                                }
+                                            ])->label(false) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -523,28 +806,28 @@ $specialties = CatDoctor::getParent();
                                     <div class="col-12 mb-4">
                                         <label class="form-label fw-bold">Chọn bác sĩ (tùy chọn)</label>
                                         <div class="doctor-selection">
-                                            <div class="doctor-card">
-                                                <input type="radio" name="doctor" value="" id="doctor-auto">
-                                                <label for="doctor-auto">
-                                                    <div class="doctor-info">
-                                                        <h5>Sẽ được sắp xếp</h5>
-                                                        <p>Bác sĩ phù hợp sẽ được phân công</p>
-                                                    </div>
-                                                </label>
-                                            </div>
-                                            <?php if (!empty($doctors)): ?>
-                                                <?php foreach ($doctors as $doctor): ?>
-                                                    <div class="doctor-card">
-                                                        <input type="radio" name="doctor" value="<?= $doctor->id ?>" id="doctor-<?= $doctor->id ?>">
-                                                        <label for="doctor-<?= $doctor->id ?>">
-                                                            <div class="doctor-info">
-                                                                <h5><?= $doctor->name ?></h5>
-                                                                <p><?= $doctor->father ? $doctor->father->name : 'Chuyên khoa' ?></p>
-                                                            </div>
-                                                        </label>
-                                                    </div>
-                                                <?php endforeach; ?>
-                                            <?php endif; ?>
+                                            <?php 
+                                            $doctorOptions = ['' => 'Sẽ được sắp xếp - Bác sĩ phù hợp sẽ được phân công'];
+                                            if (!empty($doctors)) {
+                                                foreach ($doctors as $doctor) {
+                                                    $doctorOptions[$doctor->id] = $doctor->name . ' - ' . ($doctor->father ? $doctor->father->name : 'Chuyên khoa');
+                                                }
+                                            }
+                                            ?>
+                                            <?= $form->field($model, 'doctor_id')->radioList($doctorOptions, [
+                                                'item' => function ($index, $label, $name, $checked, $value) {
+                                                    $id = $value ? 'doctor-' . $value : 'doctor-auto';
+                                                    return '<div class="doctor-card">' .
+                                                        Html::radio($name, $checked, ['value' => $value, 'id' => $id]) .
+                                                        '<label for="' . $id . '">' .
+                                                        '<div class="doctor-info">' .
+                                                        '<h5>' . ($value ? explode(' - ', $label)[0] : 'Sẽ được sắp xếp') . '</h5>' .
+                                                        '<p>' . ($value ? explode(' - ', $label)[1] : 'Bác sĩ phù hợp sẽ được phân công') . '</p>' .
+                                                        '</div>' .
+                                                        '</label>' .
+                                                        '</div>';
+                                                }
+                                            ])->label(false) ?>
                                         </div>
                                     </div>
                                 </div>
@@ -570,15 +853,15 @@ $specialties = CatDoctor::getParent();
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold">Họ và tên *</label>
-                                        <input type="text" class="form-control" name="full_name" required>
+                                        <?= $form->field($model, 'name')->textInput(['class' => 'form-control'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold">Số điện thoại *</label>
-                                        <input type="tel" class="form-control" name="phone" required>
+                                        <?= $form->field($model, 'phone')->textInput(['type' => 'tel', 'class' => 'form-control'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6 mb-3">
-                                        <label class="form-label fw-bold">Email *</label>
-                                        <input type="email" class="form-control" name="email" required>
+                                        <label class="form-label fw-bold">Email</label>
+                                        <?= $form->field($model, 'email')->textInput(['type' => 'email', 'class' => 'form-control'])->label(false) ?>
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label fw-bold">Tuổi</label>
@@ -586,7 +869,7 @@ $specialties = CatDoctor::getParent();
                                     </div>
                                     <div class="col-12 mb-3">
                                         <label class="form-label fw-bold">Ghi chú (tùy chọn)</label>
-                                        <textarea class="form-control" name="notes" rows="3" placeholder="Mô tả tình trạng sức khỏe, triệu chứng hoặc yêu cầu đặc biệt..."></textarea>
+                                        <?= $form->field($model, 'message')->textarea(['class' => 'form-control', 'rows' => 3, 'placeholder' => 'Mô tả tình trạng sức khỏe, triệu chứng hoặc yêu cầu đặc biệt...'])->label(false) ?>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-between">
@@ -696,10 +979,10 @@ function prevStep(step) {
 
 function validateCurrentStep() {
     if (currentStep === 1) {
-        const service = document.querySelector('select[name="service"]').value;
-        const branch = document.querySelector('input[name="branch"]:checked');
+        const service = document.querySelector('select[name="BookingForm[service_id]"]');
+        const branch = document.querySelector('input[name="BookingForm[branch]"]:checked');
         
-        if (!service) {
+        if (!service || !service.value) {
             alert('Vui lòng chọn dịch vụ khám');
             return false;
         }
@@ -708,16 +991,33 @@ function validateCurrentStep() {
             return false;
         }
     } else if (currentStep === 2) {
-        const doctor = document.querySelector('input[name="doctor"]:checked');
-        const timeSlot = document.querySelector('input[name="time_slot"]:checked');
-        const appointmentDate = document.querySelector('input[name="appointment_date"]').value;
+        const doctor = document.querySelector('input[name="BookingForm[doctor_id]"]:checked');
+        const timeSlot = document.querySelector('input[name="BookingForm[preferred_time]"]:checked');
+        const appointmentDate = document.querySelector('input[name="BookingForm[preferred_date]"]');
         
-        if (!appointmentDate) {
+        if (!appointmentDate || !appointmentDate.value) {
             alert('Vui lòng chọn ngày khám');
             return false;
         }
         if (!timeSlot) {
             alert('Vui lòng chọn giờ khám');
+            return false;
+        }
+    } else if (currentStep === 3) {
+        const fullName = document.querySelector('input[name="BookingForm[name]"]');
+        const phone = document.querySelector('input[name="BookingForm[phone]"]');
+        const email = document.querySelector('input[name="BookingForm[email]"]');
+        
+        if (!fullName || !fullName.value) {
+            alert('Vui lòng nhập họ và tên');
+            return false;
+        }
+        if (!phone || !phone.value) {
+            alert('Vui lòng nhập số điện thoại');
+            return false;
+        }
+        if (!email || !email.value) {
+            alert('Vui lòng nhập email');
             return false;
         }
     }
@@ -727,7 +1027,7 @@ function validateCurrentStep() {
 // Add interactive effects for radio buttons
 document.addEventListener('DOMContentLoaded', function() {
     // Branch selection effects
-    const branchRadios = document.querySelectorAll('input[name="branch"]');
+    const branchRadios = document.querySelectorAll('input[name="BookingForm[branch]"]');
     branchRadios.forEach(radio => {
         radio.addEventListener('change', function() {
             // Remove selected class from all branch options
@@ -774,39 +1074,46 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Form submission
+    // Form submission - Let form submit normally to server
     document.getElementById('booking-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        if (validateCurrentStep()) {
-            // Populate success modal with real data
-            populateSuccessModal();
-            
-            // Show success modal
-            const modal = new bootstrap.Modal(document.getElementById('successModal'));
-            modal.show();
+        // Only prevent default if validation fails
+        if (!validateCurrentStep()) {
+            e.preventDefault();
         }
+        // If validation passes, let form submit to server
     });
     
     // Set minimum date to today
     const today = new Date().toISOString().split('T')[0];
-    document.querySelector('input[name="appointment_date"]').setAttribute('min', today);
+    const dateInput = document.querySelector('input[name="BookingForm[preferred_date]"]');
+    if (dateInput) {
+        dateInput.setAttribute('min', today);
+    }
 });
 
 function populateSuccessModal() {
     // Get form data
-    const serviceId = document.querySelector('select[name="service"]').value;
-    const serviceName = document.querySelector('select[name="service"]').selectedOptions[0].text;
-    const branch = document.querySelector('input[name="branch"]:checked').value;
-    const branchName = document.querySelector('input[name="branch"]:checked').nextElementSibling.querySelector('strong').textContent;
-    const doctorId = document.querySelector('input[name="doctor"]:checked').value;
-    const doctorName = doctorId ? document.querySelector('input[name="doctor"]:checked').nextElementSibling.querySelector('h5').textContent : 'Sẽ được sắp xếp';
-    const appointmentDate = document.querySelector('input[name="appointment_date"]').value;
-    const timeSlot = document.querySelector('input[name="time_slot"]:checked').value;
-    const fullName = document.querySelector('input[name="full_name"]').value;
-    const phone = document.querySelector('input[name="phone"]').value;
-    const email = document.querySelector('input[name="email"]').value;
-    const notes = document.querySelector('textarea[name="notes"]').value;
+    const serviceSelect = document.querySelector('select[name="BookingForm[service_id]"]');
+    const serviceId = serviceSelect ? serviceSelect.value : '';
+    const serviceName = serviceSelect && serviceSelect.selectedOptions[0] ? serviceSelect.selectedOptions[0].text : '';
+    const branchRadio = document.querySelector('input[name="BookingForm[branch]"]:checked');
+    const branch = branchRadio ? branchRadio.value : '';
+    const branchName = branchRadio ? branchRadio.nextElementSibling.querySelector('strong').textContent : '';
+    const doctorRadio = document.querySelector('input[name="BookingForm[doctor_id]"]:checked');
+    const doctorId = doctorRadio ? doctorRadio.value : '';
+    const doctorName = doctorRadio ? doctorRadio.nextElementSibling.querySelector('h5').textContent : 'Sẽ được sắp xếp';
+    const appointmentDateInput = document.querySelector('input[name="BookingForm[preferred_date]"]');
+    const appointmentDate = appointmentDateInput ? appointmentDateInput.value : '';
+    const timeSlotRadio = document.querySelector('input[name="BookingForm[preferred_time]"]:checked');
+    const timeSlot = timeSlotRadio ? timeSlotRadio.value : '';
+    const fullNameInput = document.querySelector('input[name="BookingForm[name]"]');
+    const fullName = fullNameInput ? fullNameInput.value : '';
+    const phoneInput = document.querySelector('input[name="BookingForm[phone]"]');
+    const phone = phoneInput ? phoneInput.value : '';
+    const emailInput = document.querySelector('input[name="BookingForm[email]"]');
+    const email = emailInput ? emailInput.value : '';
+    const notesInput = document.querySelector('textarea[name="BookingForm[message]"]');
+    const notes = notesInput ? notesInput.value : '';
     
     // Generate booking code
     const bookingCode = '#MC' + Math.random().toString(36).substr(2, 6).toUpperCase();

@@ -30,8 +30,8 @@ class AppAsset extends AssetBundle
         'bundle/plugins/aos/aos.css',
         '//cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css',
         '//cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
-        'bundle/css/style.scss',
-        // 'bundle/css/phone.scss',
+        'bundle/css/style.css',
+        'bundle/css/phone.css',
         'bundle/css/customize.css',
     ];
     public $js = [
@@ -60,8 +60,8 @@ class AppAsset extends AssetBundle
         'bundle/js/search.js',
     ];
     public $depends = [
-        // 'yii\web\YiiAsset',
-        // 'yii\bootstrap\BootstrapAsset',
+        'yii\web\YiiAsset',
+        'yii\bootstrap\BootstrapAsset',
     ];
     // public $jsOptions = ['async' => 'async'];
     // public $jsOptions = ['defer' => 'defer'];

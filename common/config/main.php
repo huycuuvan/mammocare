@@ -26,12 +26,13 @@ return [
             'class' => 'yii\caching\FileCache',
         ],
         'assetManager' => [
-            'converter' => [
-                'class' => 'yii\web\AssetConverter',
-                'commands' => [
-                    'scss' => ['css', 'D://dart-sass/sass {from} {to} --style compressed'],
-                    ],
-            ],
+            // Tắt asset converter để tránh lỗi dart-sass
+            // 'converter' => [
+            //     'class' => 'yii\web\AssetConverter',
+            //     'commands' => [
+            //         'scss' => ['css', 'D://dart-sass/sass {from} {to} --style compressed'],
+            //         ],
+            // ],
             'bundles' => [
                 'yii\web\JqueryAsset' => [
                     // 'js'=>['//code.jquery.com/jquery-2.1.4.min.js']

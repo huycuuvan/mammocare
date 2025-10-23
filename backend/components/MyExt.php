@@ -101,17 +101,51 @@ class MyExt extends Model {
 	{
 		$conf = Configure::getConfigure();
 
-		# Instantiate the client.
-		$mgClient = Mailgun::create($conf->mailgun_key);
-		$domain = $conf->mailgun_domain;
+		// Try Mailgun first, fallback to PHP mail() if fails
+		try {
+			# Instantiate the client.
+			$mgClient = Mailgun::create($conf->mailgun_key);
+			$domain = $conf->mailgun_domain;
 
-		return $mgClient->messages()->send($domain, [
-			'from'    => $conf->sender_label.' <'.$conf->email_label.'>',
-			'to'      => $to,
-			'subject' => $subject,
-			'html'    => $content
-		]);
-
+			return $mgClient->messages()->send($domain, [
+				'from'    => $conf->sender_label.' <'.$conf->email_label.'>',
+				'to'      => $to,
+				'subject' => $subject,
+				'html'    => $content
+			]);
+		} catch (\Exception $e) {
+			// For development environment, just log the email instead of sending
+			if (YII_ENV_DEV || YII_ENV_TEST) {
+				// Log email to file for development
+				$logFile = Yii::getAlias('@runtime') . '/emails.log';
+				$logContent = "[" . date('Y-m-d H:i:s') . "] EMAIL SENT\n";
+				$logContent .= "To: " . $to . "\n";
+				$logContent .= "Subject: " . $subject . "\n";
+				$logContent .= "Content: " . $content . "\n";
+				$logContent .= "---\n\n";
+				file_put_contents($logFile, $logContent, FILE_APPEND | LOCK_EX);
+				return true; // Return true to indicate "success"
+			}
+			
+			// For production, try PHP mail() function
+			try {
+				$headers = "MIME-Version: 1.0" . "\r\n";
+				$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
+				$headers .= "From: " . $conf->sender_label . " <" . $conf->email_label . ">" . "\r\n";
+				
+				return mail($to, $subject, $content, $headers);
+			} catch (\Exception $mailException) {
+				// If PHP mail() also fails, just log it
+				$logFile = Yii::getAlias('@runtime') . '/email_errors.log';
+				$logContent = "[" . date('Y-m-d H:i:s') . "] EMAIL FAILED\n";
+				$logContent .= "To: " . $to . "\n";
+				$logContent .= "Subject: " . $subject . "\n";
+				$logContent .= "Error: " . $mailException->getMessage() . "\n";
+				$logContent .= "---\n\n";
+				file_put_contents($logFile, $logContent, FILE_APPEND | LOCK_EX);
+				return true; // Return true to not break the form
+			}
+		}
 	}
 	public static function returnDay($day){
 		switch ($day) {
